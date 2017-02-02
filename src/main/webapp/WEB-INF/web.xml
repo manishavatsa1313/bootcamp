@@ -11,20 +11,20 @@
   </welcome-file-list>
    <servlet>
        <servlet-name>Campaign</servlet-name>
-       <servlet-class>ecproject.HelloWorld</servlet-class>
+       <servlet-class>ecproject.CampaignAPI</servlet-class>
        <load-on-startup>1</load-on-startup>
    </servlet>
    <servlet-mapping>
        <servlet-name>Campaign</servlet-name>
-       <url-pattern>settings/push.php</url-pattern>
+       <url-pattern>settings/push</url-pattern>
    </servlet-mapping>
    <servlet>
-       <servlet-name>AdServer</servlet-name>
-       <servlet-class>ecproject.HelloWorld2</servlet-class>
+       <servlet-name>Engagements</servlet-name>
+       <servlet-class>ecproject.dropoffAPI</servlet-class>
        <load-on-startup>1</load-on-startup>
    </servlet>
    <servlet-mapping>
-       <servlet-name>AdServer</servlet-name>
-       <url-pattern>set/push.php</url-pattern>
+       <servlet-name>Engagements</servlet-name>
+       <url-pattern>engagement/dropoff/*</url-pattern>
    </servlet-mapping>
 </web-app>

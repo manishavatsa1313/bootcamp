@@ -28,19 +28,19 @@ public class CampaignServlet extends HttpServlet {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject = new JSONObject(req.getParameter("json"));
 		Iterator<String> it = jsonObject.keys();
-		String query = "INSERT INTO CAMPAIGNS VALUES(?, ?)";
+		String query = "INSERT INTO campaign(msg_per_day, api_server_key, subsequent_push_interval) VALUES (?, ?, ?)";
 		DataSource ds = null;
 		try {
 			ds = DataSource.getInstance();
 			Connection con = ds.getConnection();
 
 			PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-			int i = 0;
+			int i = 1;
 			while (it.hasNext()) {
 				String key = it.next();
 				ps.setString(i++, jsonObject.get(key).toString());
 			}
-			ps.executeQuery();
+			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

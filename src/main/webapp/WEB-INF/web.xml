@@ -15,7 +15,7 @@
    </servlet>
    <servlet-mapping>
        <servlet-name>Campaign</servlet-name>
-       <url-pattern>settings/push1</url-pattern>
+       <url-pattern>settings/push</url-pattern>
    </servlet-mapping>
 <servlet>
        <servlet-name>Campaigns</servlet-name>
@@ -23,7 +23,7 @@
    </servlet>
    <servlet-mapping>
        <servlet-name>Campaigns</servlet-name>
-       <url-pattern>settings/push</url-pattern>
+       <url-pattern>settings/push1</url-pattern>
    </servlet-mapping>
    
 <servlet>

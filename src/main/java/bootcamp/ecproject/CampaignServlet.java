@@ -1,33 +1,55 @@
-package ecproject;
+package bootcamp.ecproject;
 
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Iterator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class HelloWorld2 extends HttpServlet {
+import org.json.JSONObject;
+
+import bootcamp.db.mysql.DataSource;
+
+public class CampaignServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1031422249396784970L;
 
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-		resp.setContentType("text/html");
-
-		PrintWriter out = resp.getWriter();
-		out.print("Hello World from Servlet");
-		sqlconnect();
-		out.flush();
-		out.close();
-	}
-
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject = new JSONObject(req.getParameter("json"));
+		Iterator<String> it = jsonObject.keys();
+		String query = "INSERT INTO CAMPAIGNS VALUES(?, ?)";
+		DataSource ds = null;
+		try {
+			ds = DataSource.getInstance();
+			Connection con = ds.getConnection();
+
+			PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			int i = 0;
+			while (it.hasNext()) {
+				String key = it.next();
+				ps.setString(i++, jsonObject.get(key).toString());
+			}
+			ps.executeQuery();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (PropertyVetoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		String user = req.getParameter("uname");
 		String password = req.getParameter("pass");
 		res.setContentType("text/html;charset=utf-8");
@@ -37,7 +59,7 @@ public class HelloWorld2 extends HttpServlet {
 		pw.println("<h2> Your Password is " + password + "</h2>");
 	}
 
-	public void sqlconnect() {
+	private void sqlconnect() {
 		try {
 
 			Class.forName("com.mysql.cj.jdbc.Driver");

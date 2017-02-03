@@ -9,21 +9,13 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
-   <servlet>
-       <servlet-name>Campaign</servlet-name>
-       <servlet-class>ecproject.CampaignAPI</servlet-class>
-   </servlet>
-   <servlet-mapping>
-       <servlet-name>Campaign</servlet-name>
-       <url-pattern>settings/push</url-pattern>
-   </servlet-mapping>
-<servlet>
+  <servlet>
        <servlet-name>Campaigns</servlet-name>
        <servlet-class>bootcamp.ecproject.CampaignServlet</servlet-class>
    </servlet>
    <servlet-mapping>
        <servlet-name>Campaigns</servlet-name>
-       <url-pattern>settings/push1</url-pattern>
+       <url-pattern>settings/push</url-pattern>
    </servlet-mapping>
    
 <servlet>

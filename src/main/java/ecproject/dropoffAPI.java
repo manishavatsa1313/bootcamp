@@ -8,11 +8,15 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import bootcamp.db.mysql.DataSource;
 
@@ -35,8 +39,10 @@ public class dropoffAPI extends HttpServlet {
 		String command = URI.substring(URI.indexOf("/", 19) + 1);
 		String key = req.getHeader("Authorization");
 		Integer campaignId;
+
 		try {
 			if ((campaignId = authorized(key)) != null) {
+
 			} else {
 				res.sendError(403);
 				return;
@@ -65,6 +71,54 @@ public class dropoffAPI extends HttpServlet {
 			String engagement_name = req.getParameter("engagement_name");
 			delete(engagement_name);
 		}
+		if (command.equalsIgnoreCase("notification/show")) {
+			try {
+				Connection con = DataSource.getInstance().getConnection();
+				Statement statement = con.createStatement();
+				ResultSet rs = statement.executeQuery("SELECT id FROM campaign");
+				List<CampaignData> camps = new ArrayList<CampaignData>();
+				while (rs.next()) {
+					int campaign_id = rs.getInt("id");
+					CampaignData cd = getnotification(campaign_id);
+					camps.add(cd);
+					System.out.println(cd);
+				}
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}
+	}
+
+	private CampaignData getnotification(int campaign_id) {
+		CampaignData cd = null;
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			cd = new CampaignData();
+			Connection con1 = DataSource.getInstance().getConnection();
+			Statement statement = con1.createStatement();
+			ResultSet rs1 = statement.executeQuery("SELECT * FROM campaign where id =" + campaign_id);
+			Connection con2 = DataSource.getInstance().getConnection();
+			Statement statement2 = con2.createStatement();
+			ResultSet rs2 = statement2.executeQuery("SELECT * FROM engagement where campaign_id =" + campaign_id);
+			cd.setCampaignId(campaign_id);
+			rs1.next();
+			cd.setMessage_per_day(rs1.getInt("msg_per_day"));
+			cd.setApi_server_key(rs1.getString("api_server_key"));
+			cd.setSubsequent_push_interval(rs1.getLong("subsequent_push_interval"));
+			List<Notification> notifs = new ArrayList<Notification>();
+			while (rs2.next()) {
+				Notification notification = objectMapper.readValue(rs2.getString("dropoff_settings"),
+						Notification.class);
+				notification.setId(rs2.getInt("id"));
+				notification.setEnagagementName(rs2.getString("engagement_name"));
+				notifs.add(notification);
+			}
+			cd.setNotifications(notifs);
+
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return cd;
 	}
 
 	private Integer authorized(String key) throws SQLException, IOException, PropertyVetoException {

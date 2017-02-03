@@ -41,7 +41,6 @@ public class Notification {
 	}
 
 	public String getMessage() {
-		System.out.println(message);
 		return message;
 	}
 

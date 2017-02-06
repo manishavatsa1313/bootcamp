@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import bootcamp.db.mysql.DataSource;
 
-public class dropoffAPI extends HttpServlet {
+public class timebasedAPI extends HttpServlet {
 
 	private static final long serialVersionUID = 1031422249396784970L;
 
@@ -54,8 +54,9 @@ public class dropoffAPI extends HttpServlet {
 		if (command.equalsIgnoreCase("create/push")) {
 			String engagement_name = req.getParameter("engagement_name");
 			String dropoff_settings = req.getParameter("dropoff_settings");
+			boolean isImmediate = Boolean.valueOf(req.getParameter("isImmediate"));
 			res.setContentType("text/html;charset=utf-8");
-			create(engagement_name, dropoff_settings, campaignId);
+			create(engagement_name, dropoff_settings, campaignId, isImmediate);
 			return;
 		}
 
@@ -154,12 +155,20 @@ public class dropoffAPI extends HttpServlet {
 		}
 	}
 
-	public void create(String engagement_name, String dropoff_settings, Integer campaignId) {
+	public void create(String engagement_name, String dropoff_settings, Integer campaignId, boolean isImmediate) {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bootcamp", "root", "root");
 			Statement stmt = con.createStatement();
-			stmt.executeUpdate("insert into engagement(engagement_name, type, dropoff_settings, campaign_id) values("
-					+ engagement_name + ", \"DROPOFF\", " + dropoff_settings + ", " + campaignId + ")");
+			if (isImmediate == true) {
+				stmt.executeUpdate(
+						"insert into engagement(engagement_name, type, dropoff_settings, campaign_id) values("
+								+ engagement_name + ", \"IMMEDIATE\", " + dropoff_settings + ", " + campaignId + ")");
+			} else {
+				stmt.executeUpdate(
+						"insert into engagement(engagement_name, type, dropoff_settings, campaign_id) values("
+								+ engagement_name + ", \"TIMEBASED\", " + dropoff_settings + ", " + campaignId + ")");
+			}
+
 			con.close();
 		} catch (Exception e) {
 			System.out.println(e);

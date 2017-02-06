@@ -27,4 +27,13 @@
        <servlet-name>Engagements</servlet-name>
        <url-pattern>engagement/dropoff/*</url-pattern>
    </servlet-mapping>
+   <servlet>
+       <servlet-name>TimeEngagements</servlet-name>
+       <servlet-class>ecproject.timebasedAPI</servlet-class>
+       <load-on-startup>1</load-on-startup>
+   </servlet>
+   <servlet-mapping>
+       <servlet-name>TimeEngagements</servlet-name>
+       <url-pattern>engagement/timebased/*</url-pattern>
+   </servlet-mapping>
 </web-app>
